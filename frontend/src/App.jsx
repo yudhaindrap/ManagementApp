@@ -6,6 +6,7 @@ import MainLayout from './layouts/MainLayout';
 // Import Pages
 import Dashboard from './pages/Dashboard';
 import Proyek from './pages/Proyek';
+import DetailProyek from './pages/DetailProyek';
 import Stok from './pages/Stok';
 import Login from './pages/Login';
 
@@ -26,13 +27,16 @@ function App() {
               : <Navigate to="/login" replace />
           }
         >
-          {/* Default path ke Dashboard */}
+          {/* Dashboard */}
           <Route path="/" element={<Dashboard />} />
 
-          {/* Path Manajemen Proyek */}
+          {/* Proyek List */}
           <Route path="/proyek" element={<Proyek />} />
 
-          {/* Path Manajemen Stok */}
+          {/* 🔥 Proyek Detail (DYNAMIC ID) */}
+          <Route path="/proyek/:id" element={<DetailProyek />} />
+
+          {/* Stok */}
           <Route path="/stok" element={<Stok />} />
         </Route>
 
