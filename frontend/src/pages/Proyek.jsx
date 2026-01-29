@@ -115,7 +115,7 @@ export default function Proyek() {
       </div>
 
       {/* TABLE */}
-      <div className="bg-white rounded-2xl shadow-sm border overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
         <table className="w-full">
           <thead className="bg-gray-50 text-gray-400 text-xs uppercase">
             <tr>
@@ -126,7 +126,7 @@ export default function Proyek() {
             </tr>
           </thead>
 
-          <tbody className="divide-y">
+          <tbody>
             {filteredProyek.map((p) => (
               <tr key={p.id}>
                 <td className="px-6 py-4">

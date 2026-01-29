@@ -120,7 +120,7 @@ export default function Stok() {
       </div>
 
       {/* Grid Kartu Stok */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredStok.length > 0 ? (
           filteredStok.map((item) => (
             <div key={item.id} className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 relative group overflow-hidden hover:shadow-xl transition-all duration-300">
@@ -194,31 +194,48 @@ export default function Stok() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-black text-gray-400 uppercase mb-1">Jumlah</label>
-              <input 
-                type="number" 
-                className="w-full border-2 border-gray-100 p-3.5 rounded-2xl outline-none focus:border-emerald-500" 
-                value={formData.qty}
-                onChange={e => setFormData({...formData, qty: e.target.value})} 
-                required 
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-black text-gray-400 uppercase mb-1">Satuan</label>
-              <select 
-                className="w-full border-2 border-gray-100 p-3.5 rounded-2xl outline-none focus:border-emerald-500 bg-white"
-                value={formData.unit}
-                onChange={e => setFormData({...formData, unit: e.target.value})}
-              >
-                <option value="Sak">Sak</option>
-                <option value="Unit">Unit</option>
-                <option value="Batang">Batang</option>
-                <option value="Kg">Kg</option>
-              </select>
-            </div>
+        <div className="grid grid-cols-3 gap-4">
+          {/* Jumlah */}
+          <div>
+            <label className="block text-xs font-black text-gray-400 uppercase mb-1">Jumlah</label>
+            <input 
+              type="number" 
+              className="w-full border-2 border-gray-100 p-3.5 rounded-2xl outline-none focus:border-emerald-500" 
+              value={formData.qty}
+              onChange={e => setFormData({...formData, qty: e.target.value})} 
+              required 
+              min="0"
+            />
           </div>
+
+          {/* Satuan */}
+          <div>
+            <label className="block text-xs font-black text-gray-400 uppercase mb-1">Satuan</label>
+            <select 
+              className="w-full border-2 border-gray-100 p-3.5 rounded-2xl outline-none focus:border-emerald-500 bg-white"
+              value={formData.unit}
+              onChange={e => setFormData({...formData, unit: e.target.value})}
+            >
+              <option value="Sak">Sak</option>
+              <option value="Unit">Unit</option>
+              <option value="Batang">Batang</option>
+              <option value="Kg">Kg</option>
+            </select>
+          </div>
+
+          {/* Minimal Stok */}
+          <div>
+            <label className="block text-xs font-black text-gray-400 uppercase mb-1">Minimal</label>
+            <input 
+              type="number"
+              min="0"
+              className="w-full border-2 border-gray-100 p-3.5 rounded-2xl outline-none focus:border-emerald-500"
+              value={formData.min_qty}
+              onChange={e => setFormData({...formData, min_qty: e.target.value})}
+              required
+            />
+          </div>  
+        </div>
 
           <button className="w-full bg-emerald-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-emerald-100 mt-4">
             Simpan Material

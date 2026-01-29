@@ -9,6 +9,7 @@ import Proyek from './pages/Proyek';
 import DetailProyek from './pages/DetailProyek';
 import Stok from './pages/Stok';
 import Login from './pages/Login';
+import Supplier from './pages/Supplier';
 import Laporan from './pages/Laporan';
 
 function App() {
@@ -39,6 +40,9 @@ function App() {
 
           {/* Stok */}
           <Route path="/stok" element={<Stok />} />
+
+          {/* Supplier */}
+          <Route path="/supplier" element={<Supplier />} />
 
           {/* Lapor */}
           <Route path="/laporan" element={<Laporan />} />

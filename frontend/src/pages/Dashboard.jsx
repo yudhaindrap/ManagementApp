@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { Bar } from 'react-chartjs-2';
+import ActivityLogList from '../components/ActivityLogList';
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -55,22 +57,37 @@ export default function Dashboard() {
       </div>
 
       {/* Area Grafik */}
-      <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
-        <div className="mb-6">
-          <h3 className="text-lg font-black text-slate-800">Visualisasi Stok Material</h3>
-          <p className="text-sm text-gray-400">Perbandingan jumlah ketersediaan barang saat ini di database.</p>
-        </div>
-        <div className="h-[400px] flex justify-center">
-          <Bar 
-            data={chartData} 
-            options={{ 
-              responsive: true, 
-              maintainAspectRatio: false,
-              plugins: { legend: { display: false } }
-            }} 
-          />
-        </div>
-      </div>
+      {/* Grafik + Log Aktivitas */}
+<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  
+  {/* Grafik Stok (lebih lebar) */}
+  <div className="lg:col-span-2 bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
+    <div className="mb-6">
+      <h3 className="text-lg font-black text-slate-800">
+        Visualisasi Stok Material
+      </h3>
+      <p className="text-sm text-gray-400">
+        Perbandingan jumlah ketersediaan barang saat ini.
+      </p>
+    </div>
+
+    <div className="h-[400px]">
+      <Bar
+        data={chartData}
+        options={{
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }}
+      />
+    </div>
+  </div>
+
+  {/* Log Aktivitas */}
+  <ActivityLogList />
+
+</div>
+
     </div>
   );
 }
