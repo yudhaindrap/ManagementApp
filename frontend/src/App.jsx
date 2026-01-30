@@ -11,6 +11,8 @@ import Stok from './pages/Stok';
 import Login from './pages/Login';
 import Supplier from './pages/Supplier';
 import Laporan from './pages/Laporan';
+import Pekerja from './pages/Pekerja';
+import Keuangan from './pages/Keuangan';
 
 function App() {
   const isAuthenticated = !!localStorage.getItem('token');
@@ -43,6 +45,12 @@ function App() {
 
           {/* Supplier */}
           <Route path="/supplier" element={<Supplier />} />
+
+          {/* Pekerja */}
+          <Route path="/pekerja" element={<Pekerja />} />
+
+          {/* Keuangan */}
+          <Route path="/keuangan" element={<Keuangan />} />
 
           {/* Lapor */}
           <Route path="/laporan" element={<Laporan />} />
