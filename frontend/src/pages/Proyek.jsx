@@ -14,6 +14,7 @@ export default function Proyek() {
     nama: '',
     client: '',
     deadline: '',
+    budget: '',
     status: 'Proses',
   });
 
@@ -43,32 +44,34 @@ export default function Proyek() {
   );
 
   // 🔹 Simpan Proyek
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const formData = new FormData();
-    formData.append('nama', newProyek.nama);
-    formData.append('client', newProyek.client);
-    formData.append('deadline', newProyek.deadline);
-    formData.append('status', newProyek.status);
-    if (file) formData.append('attachment', file);
+  const formData = new FormData();
+  formData.append('nama', newProyek.nama);
+  formData.append('client', newProyek.client);
+  formData.append('deadline', newProyek.deadline);
+  formData.append('budget', newProyek.budget); // Tambahkan ini
+  formData.append('status', newProyek.status);
+  if (file) formData.append('attachment', file);
 
-    try {
-      const response = await api.post('/projects', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+  try {
+    const response = await api.post('/projects', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
 
-      setProyekList([...proyekList, response.data]);
-      setIsModalOpen(false);
-      setNewProyek({ nama: '', client: '', deadline: '', status: 'Proses' });
-      setDeadlineDate('');
-      setDeadlineTime('');
-      setFile(null);
-    } catch (error) {
-      console.error('Gagal menyimpan data:', error);
-      alert('Gagal menyimpan proyek');
-    }
-  };
+    setProyekList([...proyekList, response.data]);
+    setIsModalOpen(false);
+    // Reset form
+    setNewProyek({ nama: '', client: '', deadline: '', budget: '', status: 'Proses' }); 
+    setDeadlineDate('');
+    setDeadlineTime('');
+    setFile(null);
+  } catch (error) {
+    console.error('Gagal menyimpan data:', error);
+    alert('Gagal menyimpan proyek. Pastikan semua field terisi.');
+  }
+};
 
   // 🔹 Hapus Proyek
   const handleDelete = async (id) => {
@@ -115,7 +118,7 @@ export default function Proyek() {
       </div>
 
       {/* TABLE */}
-      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-300">
         <table className="w-full">
           <thead className="bg-gray-50 text-gray-400 text-xs uppercase">
             <tr>
@@ -223,6 +226,20 @@ export default function Proyek() {
             className="w-full text-xs"
             onChange={(e) => setFile(e.target.files[0])}
           />
+
+          <div>
+            <label className="text-xs font-bold text-gray-400 mb-1 block">
+              Anggaran Proyek (Budget)
+            </label>
+            <input
+              type="number"
+              placeholder="Contoh: 50000000"
+              className="w-full border p-3 rounded-xl font-bold text-blue-600 shadow-sm"
+              value={newProyek.budget}
+              onChange={(e) => setNewProyek({ ...newProyek, budget: e.target.value })}
+              required
+            />
+          </div>
 
           <button className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold">
             Simpan Proyek
