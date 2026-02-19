@@ -9,6 +9,7 @@ export default function Proyek() {
   const [proyekList, setProyekList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [previewUrl, setPreviewUrl] = useState(null);
   
   // --- LOGIKA ROLE (BARU) ---
   const user = JSON.parse(localStorage.getItem('user'));
@@ -52,9 +53,8 @@ export default function Proyek() {
 
   const resetForm = () => {
     setNewProyek({ id: null, nama: '', client: '', deadline: '', budget: '', status: 'Proses' });
-    setDeadlineDate('');
-    setDeadlineTime('');
     setFile(null);
+    setPreviewUrl(null); // Reset preview
   };
 
   const filteredProyek = proyekList.filter((p) =>
@@ -244,11 +244,35 @@ export default function Proyek() {
               />
             </div>
 
-            <input
-              type="file"
-              className="w-full text-xs"
-              onChange={(e) => setFile(e.target.files[0])}
-            />
+            <div>
+              <label className="text-xs font-bold text-gray-400 mb-1 block">Primary Blueprint</label>
+              <input
+                type="file"
+                accept="image/*"
+                className="w-full text-xs mb-3"
+                onChange={(e) => {
+                  const selectedFile = e.target.files[0];
+                  setFile(selectedFile);
+                  if (selectedFile) {
+                    setPreviewUrl(URL.createObjectURL(selectedFile)); // Buat URL preview
+                  }
+                }}
+              />
+              
+              {/* Tampilan Preview */}
+              {previewUrl && (
+                <div className="relative mt-2 rounded-xl overflow-hidden border-2 border-blue-100 aspect-video">
+                  <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
+                  <button 
+                    type="button"
+                    onClick={() => { setFile(null); setPreviewUrl(null); }}
+                    className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full text-[10px] px-2 font-bold"
+                  >
+                    Hapus
+                  </button>
+                </div>
+              )}
+            </div>
 
             <div>
               <label className="text-xs font-bold text-gray-400 mb-1 block">Anggaran Proyek (Budget)</label>

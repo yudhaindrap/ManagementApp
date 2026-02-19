@@ -3,19 +3,19 @@ import api from '../api/axios';
 import { Link } from 'react-router-dom';
 import { 
   BarChart, Bar as ReBar, XAxis, YAxis, CartesianGrid, Tooltip as ReTooltip, 
-  ResponsiveContainer, Cell, AreaChart, Area, LineChart, Line
+  ResponsiveContainer, Cell, AreaChart, Area, Legend
 } from 'recharts';
 import { 
   PlusCircle, 
   PackageMinus, 
-  FileText, 
   TrendingUp, 
   AlertCircle,
-  ArrowUpRight
+  ArrowUpRight,
+  CircleDollarSign, // Icon baru
+  Wallet // Icon baru
 } from 'lucide-react';
 import ActivityLogList from '../components/ActivityLogList';
 
-// Import Chart.js untuk Grafik Stok
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -54,7 +54,7 @@ export default function Dashboard() {
   if (loading || !data) return (
     <div className="flex h-96 items-center justify-center">
       <div className="text-center animate-pulse">
-        <p className="uppercase tracking-[0.3em] font-black text-slate-400">Menyusun Data Real-time...</p>
+        <p className="uppercase tracking-[0.3em] font-black text-slate-400">Menyusun Analisa Profit & Loss...</p>
       </div>
     </div>
   );
@@ -64,6 +64,10 @@ export default function Dashboard() {
   const formatIDR = (val) => new Intl.NumberFormat('id-ID', {
     style: 'currency', currency: 'IDR', maximumFractionDigits: 0
   }).format(val);
+
+  // LOGIKA BARU: Kalkulasi Profit & Loss (P&L)
+  const totalProfit = summary.total_budget - summary.total_realization;
+  const profitPercentage = ((totalProfit / summary.total_budget) * 100).toFixed(1);
 
   return (
     <div className="space-y-10 pb-20 animate-in fade-in duration-700">
@@ -77,18 +81,21 @@ export default function Dashboard() {
         
         {!isViewer && (
           <div className="flex flex-wrap gap-3">
+            <Link to="/absensi" className="flex items-center gap-2 bg-white border border-slate-200 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider text-slate-600 hover:bg-slate-50 transition-all shadow-sm">
+              <PlusCircle size={16} className="text-green-500" /> Absensi & Gaji
+            </Link>
             <Link to="/ambilbarang" className="flex items-center gap-2 bg-white border border-slate-200 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider text-slate-600 hover:bg-slate-50 transition-all shadow-sm">
               <PackageMinus size={16} className="text-blue-500" /> Barang Keluar
             </Link>
             <Link to="/keuangan" className="flex items-center gap-2 bg-blue-600 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-200">
-              <PlusCircle size={16} /> Catat Biaya
+              <Wallet size={16} /> Kas Keuangan
             </Link>
           </div>
         )}
       </div>
 
-      {/* --- SECTION 1: STATS CARDS --- */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* --- SECTION 1: STATS CARDS (DITAMBAHKAN PROFIT CARD) --- */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
         <div className="bg-white p-7 rounded-[2.5rem] border border-slate-100 shadow-sm">
           <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Proyek Aktif</p>
           <div className="flex items-end justify-between mt-2">
@@ -111,9 +118,19 @@ export default function Dashboard() {
               <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Biaya Terpakai</p>
               <h2 className="text-2xl font-black text-blue-600 mt-3">{formatIDR(summary.total_realization)}</h2>
             </div>
+
+            {/* CARD BARU: ESTIMASI PROFIT */}
+            <div className="bg-emerald-600 p-7 rounded-[2.5rem] shadow-xl shadow-emerald-100 relative overflow-hidden">
+              <div className="relative z-10 text-white">
+                <p className="text-emerald-200 text-[10px] font-black uppercase tracking-widest">Estimasi Profit</p>
+                <h2 className="text-xl font-black mt-3">{formatIDR(totalProfit)}</h2>
+                <p className="text-[9px] font-bold mt-1 uppercase opacity-80">Margin: {profitPercentage}%</p>
+              </div>
+              <CircleDollarSign className="absolute -right-4 -bottom-4 text-emerald-500 w-24 h-24 opacity-30" />
+            </div>
           </>
         ) : (
-          <div className="lg:col-span-2 bg-slate-100/50 p-7 rounded-[2.5rem] border-2 border-dashed border-slate-200 flex items-center justify-center">
+          <div className="lg:col-span-3 bg-slate-100/50 p-7 rounded-[2.5rem] border-2 border-dashed border-slate-200 flex items-center justify-center">
              <p className="text-slate-400 text-[10px] font-bold uppercase tracking-tighter">🔒 Data Finansial Terbatas</p>
           </div>
         )}
@@ -129,7 +146,50 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* --- SECTION 2: TREN PENGELUARAN BULANAN (FITUR BARU) --- */}
+      {/* --- SECTION 2: PROFIT & LOSS ANALYSIS (FITUR BARU) --- */}
+      {!isViewer && (
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <div className="lg:col-span-3 bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm">
+                <div className="flex justify-between items-center mb-6">
+                    <div>
+                        <h3 className="text-lg font-black text-slate-800 uppercase tracking-tight">Analisa Laba / Rugi Per Proyek</h3>
+                        <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">Perbandingan Budget vs Realisasi (Material, Gaji, Alat)</p>
+                    </div>
+                </div>
+                <div className="h-[400px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={chart_data} barGap={8}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 11, fontWeight: 'bold'}} />
+                            <YAxis tickFormatter={(val) => `Rp${val/1000000}jt`} axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 10}} />
+                            <ReTooltip 
+                                contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }}
+                                formatter={(value) => formatIDR(value)}
+                            />
+                            <Legend wrapperStyle={{paddingTop: '20px'}} iconType="circle" />
+                            <ReBar name="Budget Awal" dataKey="budget" fill="#cbd5e1" radius={[8, 8, 0, 0]} />
+                            <ReBar name="Pengeluaran (Realisasi)" dataKey="realisasi" radius={[8, 8, 0, 0]}>
+                                {chart_data.map((entry, index) => (
+                                    <Cell key={index} fill={entry.realisasi > entry.budget ? '#ef4444' : '#10b981'} />
+                                ))}
+                            </ReBar>
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+            </div>
+
+            <div className="bg-slate-50 p-8 rounded-[3rem] flex flex-col justify-center items-center text-center">
+                <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mb-4 text-emerald-600">
+                    <TrendingUp size={40} />
+                </div>
+                <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest">Efisiensi Rata-rata</h4>
+                <h2 className="text-5xl font-black text-slate-800 my-2">{profitPercentage}%</h2>
+                <p className="text-xs text-slate-500 px-6 font-medium">Sisa budget proyek dari total anggaran konstruksi saat ini.</p>
+            </div>
+        </div>
+      )}
+
+      {/* --- SECTION 3: TREN PENGELUARAN BULANAN --- */}
       {!isViewer && (
         <div className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm">
           <div className="flex justify-between items-start mb-8">
@@ -164,7 +224,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* --- SECTION 3: INVENTORY & LOG --- */}
+      {/* --- SECTION 4: INVENTORY & LOG --- */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm">
           <h3 className="text-lg font-black text-slate-800 mb-6">Distribusi Stok Material</h3>
@@ -198,48 +258,27 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* --- SECTION 4: BUDGET ANALYTICS (Hanya Super Admin) --- */}
+      {/* --- SECTION 5: BUDGET ALERT --- */}
       {!isViewer && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm">
-            <h3 className="text-lg font-black text-slate-800 mb-6">Efisiensi Budget Per Proyek</h3>
-            <div className="h-[350px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chart_data}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 10}} />
-                  <ReTooltip cursor={{fill: '#f8fafc'}} contentStyle={{ borderRadius: '15px' }} />
-                  <ReBar name="Budget" dataKey="budget" fill="#e2e8f0" radius={[10, 10, 0, 0]} barSize={25} />
-                  <ReBar name="Realisasi" dataKey="realisasi" radius={[10, 10, 0, 0]} barSize={25}>
-                    {chart_data.map((entry, index) => (
-                      <Cell key={index} fill={entry.realisasi > entry.budget ? '#ef4444' : '#3b82f6'} />
-                    ))}
-                  </ReBar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          <div className="bg-slate-900 p-8 rounded-[3rem] text-white">
-            <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 mb-6">Peringatan Budget</h3>
-            <div className="space-y-4">
-              {at_risk.length > 0 ? at_risk.map((proj, idx) => (
-                <div key={idx} className="flex items-center justify-between p-4 bg-slate-800 rounded-2xl border-l-4 border-red-500">
-                  <div className="overflow-hidden mr-2">
-                    <p className="text-[10px] font-black text-slate-500 uppercase">{proj.nama}</p>
-                    <p className="text-sm font-bold truncate">Over Budget</p>
-                  </div>
-                  <p className="text-red-400 font-black text-xs whitespace-nowrap">
+        <div className="bg-slate-900 p-8 rounded-[3rem] text-white">
+            <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 mb-6">Peringatan Budget Melebihi Batas</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {at_risk.length > 0 ? at_risk.map((proj, idx) => (
+                <div key={idx} className="flex items-center justify-between p-5 bg-slate-800 rounded-3xl border-l-4 border-red-500">
+                    <div className="overflow-hidden mr-2">
+                        <p className="text-[10px] font-black text-slate-500 uppercase">{proj.nama}</p>
+                        <p className="text-sm font-bold truncate text-red-200">Over Budget</p>
+                    </div>
+                    <p className="text-red-400 font-black text-xs whitespace-nowrap bg-red-500/10 px-3 py-1 rounded-full">
                     -{formatIDR(proj.expenditures_sum_amount - proj.budget)}
-                  </p>
+                    </p>
                 </div>
-              )) : (
-                <div className="text-center py-10">
-                  <p className="text-slate-500 text-xs italic">Semua proyek berjalan sesuai anggaran.</p>
+                )) : (
+                <div className="col-span-full text-center py-6">
+                    <p className="text-slate-500 text-xs italic">Semua proyek berjalan sesuai anggaran (Efisiensi Tinggi).</p>
                 </div>
-              )}
+                )}
             </div>
-          </div>
         </div>
       )}
     </div>

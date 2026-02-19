@@ -19,6 +19,7 @@ const Keuangan = lazy(() => import('./pages/Keuangan'));
 const AlatBerat = lazy(() => import('./pages/AlatBerat'));
 const AmbilBarang = lazy(() => import('./pages/AmbilBarang'));
 const UserManagement = lazy(() => import('./pages/UserManagement'));
+const AbsensiManager = lazy(() => import('./pages/AbsensiManager'));
 
 // Komponen Loading yang estetik sesuai tema PM PRO
 const PageLoader = () => (
@@ -61,6 +62,7 @@ function App() {
                 <Route path="/supplier" element={<Supplier />} />
                 <Route path="/ambilbarang" element={<AmbilBarang />} />
                 <Route path="/keuangan" element={<Keuangan />} />
+                <Route path="/absensi" element={<AbsensiManager />} />
               </Route>
 
               {/* 3. Akses: STRATEGIS (Super Admin & Viewer Laporan) */}
